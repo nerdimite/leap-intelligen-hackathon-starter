@@ -21,7 +21,7 @@ yarn install
 
 ### Update Environment Variables
 
-Create a `.env` file in the `frontend` directory and add the following environment variables (replace `<your-private-ip>` with your private IP address that you obtained from the backend README):
+Edit the `.env` file in the `frontend` directory and update the following environment variables (replace `<your-private-ip>` with your private IP address that you obtained from the backend README):
 
 ```bash
 NEXT_PUBLIC_DEFAULT_CUSTOMER_ID=8
