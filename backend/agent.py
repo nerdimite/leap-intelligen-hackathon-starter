@@ -6,6 +6,11 @@ import os
 import datetime
 import json
 from openai import OpenAI
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)  # for exponential backoff
 from tool_schema import tool_definitions
 from tool_impl import tool_call_registry
 
@@ -46,6 +51,10 @@ class GreenbaseAgent:
         """
         self.messages = [{"role": "system", "content": system_prompt}]
 
+    @retry(
+        wait=wait_random_exponential(min=1, max=60),
+        stop=stop_after_attempt(6),
+    )
     def chat_completion(self, message=None, **kwargs):
         """
         Helper method to call the chat completion API with the OpenAI client while handling the chat history.
