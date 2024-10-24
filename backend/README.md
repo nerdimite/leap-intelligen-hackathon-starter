@@ -22,6 +22,7 @@ Run the following command to start the FastAPI server:
 ```bash
 python chat_server.py
 ```
+You will need to restart the server if you make any changes to the files, before you test your changes from the frontend.
 
 Open a second command prompt and type the following command to get your private IP address:
 ```bash

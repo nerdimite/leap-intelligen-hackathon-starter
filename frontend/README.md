@@ -39,3 +39,4 @@ Build and run the application by running the following commands:
 yarn next build
 yarn next start
 ```
+If you make any changes to the .env file or any other files in the frontend directory, you will need to build and run the application again. For most intents and purposes, you wouldn't need to change the .env file once you have set it up but incase you run into any issues from changing the .env file, you can try rebuilding and running the application again.
