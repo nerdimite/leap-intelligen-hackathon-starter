@@ -1,0 +1,9 @@
+.env
+__pycache__
+*lancedb
+lancedb*
+chats
+*accessKeys.csv
+submissions
+processed_submissions
+team_names.txt
