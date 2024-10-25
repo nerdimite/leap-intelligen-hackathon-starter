@@ -67,7 +67,12 @@ class GetCustomerAccountDetailsParams(BaseModel):
 class GetRiskToleranceParams(BaseModel):
     pass
 
+
 class GetFinancialGoalsParams(BaseModel):
+    pass
+
+
+class CreateFinancialGoalsParams(BaseModel):
     pass
 
 
@@ -93,6 +98,7 @@ class GetRecurringDepositsParams(BaseModel):
 
 class TransferFundsParams(BaseModel):
     pass
+
 
 class ExecuteSQLQueryParams(BaseModel):
     pass

@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 
 
-def execute_sql_query(query, params=None, commit=False):
+def execute_sql_query(query, params=None, commit=True):
     """
     Execute an SQL query and return the results as a list of dictionaries.
 
@@ -153,6 +153,19 @@ def get_customer_financial_goals(customer_id):
     """
     return execute_sql_query(query, (customer_id,))
 
+def create_financial_goal(customer_id, goal_name, goal_amount, current_savings, target_date):
+    """
+    Create a financial goal for a given customer.
+    """
+    query = """
+    INSERT INTO FinancialGoals (
+        customer_id, goal_name, goal_amount, current_savings, target_date, progress_percentage
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?
+    )
+    """
+    progress_percentage = (current_savings / goal_amount) * 100 if goal_amount > 0 else 0
+    return execute_sql_query(query, (customer_id, goal_name, goal_amount, current_savings, target_date, progress_percentage))
 
 def update_financial_goal(
     goal_id,
