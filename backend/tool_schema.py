@@ -64,7 +64,8 @@ class GetCustomerAccountDetailsParams(BaseModel):
 
 
 # Add tool definitions for the remaining actions
-
+class GetRiskToleranceParams(BaseModel):
+    pass
 
 class GetFinancialGoalsParams(BaseModel):
     pass

@@ -11,6 +11,10 @@
 - created_at: DATE
 - updated_at: DATE
 
+## RiskTolerance
+- customer_id: INTEGER (PRIMARY KEY, FOREIGN KEY -> Customers.customer_id)
+- risk_tolerance: TEXT
+
 ## SecurityQuestions
 - question_id: INTEGER (PRIMARY KEY AUTOINCREMENT)
 - customer_id: INTEGER (FOREIGN KEY -> Customers.customer_id)
@@ -27,7 +31,6 @@
 - balance: REAL
 - interest_rate: REAL
 - created_at: DATE
-- status: TEXT
 - updated_at: DATE
 
 ## SavingsAccounts
@@ -59,7 +62,6 @@
 - currency: TEXT
 - transaction_date: DATE
 - recipient_account_id: INTEGER
-- status: TEXT
 - description: TEXT
 
 ## Investments

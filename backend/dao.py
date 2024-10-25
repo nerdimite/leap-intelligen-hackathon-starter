@@ -75,6 +75,16 @@ def get_customer_profile(customer_id):
     return execute_sql_query(query, (customer_id,))
 
 
+def get_risk_tolerance(customer_id):
+    """
+    Retrieve the customer's risk tolerance.
+    """
+    query = """
+    SELECT * FROM RiskTolerance WHERE customer_id = ?
+    """
+    return execute_sql_query(query, (customer_id,))
+
+
 def get_customer_account_details(customer_id):
     """
     Retrieve detailed account information for a given customer.
