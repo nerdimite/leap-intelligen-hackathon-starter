@@ -39,6 +39,14 @@ def search_wiki(query: str, top_k: int = 5) -> list[str]:
     results = vector_db.search(query).limit(top_k).to_list()
     return search_results_template.render(query=query, results=results)
 
+
+def enable_2fa(customer_id: int):
+    """
+    Enable 2FA for a given customer.
+    """
+    return "2FA enabled for customer " + str(customer_id)
+
+
 # TODO Optional: Custom tool implementations here
 
 tool_call_registry = {

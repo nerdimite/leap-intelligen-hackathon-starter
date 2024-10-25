@@ -64,6 +64,10 @@ class GetCustomerAccountDetailsParams(BaseModel):
 
 
 # Add tool definitions for the remaining actions
+class Enable2FAParams(BaseModel):
+    pass
+
+
 class GetRiskToleranceParams(BaseModel):
     pass
 
