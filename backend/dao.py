@@ -68,7 +68,7 @@ def get_customer_profile(customer_id):
         dict: A dictionary containing the customer's profile details.
     """
     query = """
-    SELECT first_name, last_name, email, phone_number, date_of_birth, address
+    SELECT *
     FROM Customers
     WHERE customer_id = ?
     """
@@ -85,31 +85,38 @@ def get_customer_account_details(customer_id):
     Returns:
         list: A list of dictionaries containing account details for the customer.
     """
-    query = """
-    SELECT 
-        a.account_id, 
-        a.account_type, 
-        a.balance,
-        CASE
-            WHEN a.account_type = 'Savings' THEN s.account_subtype
-            WHEN a.account_type = 'Trading' THEN 
-                CASE WHEN t.margin_enabled THEN 'Margin' ELSE 'Cash' END
-            WHEN a.account_type = 'Crypto' THEN c.crypto_type
-            ELSE NULL
-        END AS subtype,
-        CASE
-            WHEN a.account_type = 'Savings' THEN 'Tier: ' || COALESCE(s.tier, 'N/A')
-            WHEN a.account_type = 'Trading' THEN 'Leverage Ratio: ' || COALESCE(t.leverage_ratio, 'N/A')
-            WHEN a.account_type = 'Crypto' THEN 'Staking Enabled: ' || CASE WHEN c.staking_enabled THEN 'Yes' ELSE 'No' END
-            ELSE 'N/A'
-        END AS additional_info
-    FROM Accounts a
-    LEFT JOIN SavingsAccounts s ON a.account_id = s.account_id
-    LEFT JOIN TradingAccounts t ON a.account_id = t.account_id
-    LEFT JOIN CryptoAccounts c ON a.account_id = c.account_id
-    WHERE a.customer_id = ?
+    get_account_ids_query = """
+    SELECT account_id, account_type FROM Accounts
+    WHERE customer_id = ?
     """
-    return execute_sql_query(query, (customer_id,))
+    accounts = execute_sql_query(get_account_ids_query, (customer_id,))
+
+    for account in accounts:
+        if account["account_type"] == "Savings":
+            query = """
+            SELECT * FROM SavingsAccounts
+            WHERE account_id = ?
+            """
+            account["savings_account"] = execute_sql_query(
+                query, (account["account_id"],)
+            )
+        elif account["account_type"] == "Trading":
+            query = """
+            SELECT * FROM TradingAccounts
+            WHERE account_id = ?
+            """
+            account["trading_account"] = execute_sql_query(
+                query, (account["account_id"],)
+            )
+        elif account["account_type"] == "Crypto":
+            query = """
+            SELECT * FROM CryptoAccounts
+            WHERE account_id = ?
+            """
+            account["crypto_account"] = execute_sql_query(
+                query, (account["account_id"],)
+            )
+    return accounts
 
 
 def get_customer_financial_goals(customer_id):
@@ -216,3 +223,82 @@ def update_financial_goal(
         return True, {"change_log": change_log, "updated_goal": updated_goal}
     else:
         return False, {"change_log": "No changes were made"}
+
+
+def get_account_transactions(account_id):
+    """
+    Retrieve all transactions for a given account.
+    """
+    query = """
+    SELECT * FROM Transactions
+    WHERE account_id = ?
+    """
+    return execute_sql_query(query, (account_id,))
+
+
+def get_investments(customer_id):
+    """
+    Retrieve all investments for a given customer.
+    """
+    query = """
+    SELECT * FROM Investments
+    WHERE customer_id = ?
+    """
+    return execute_sql_query(query, (customer_id,))
+
+def get_portfolio(customer_id):
+    """
+    Retrieve the portfolio for a given customer.
+    """
+    query = """
+    SELECT * FROM Portfolio
+    WHERE customer_id = ?
+    """
+    return execute_sql_query(query, (customer_id,))
+
+def get_recurring_deposits(customer_id):
+    """
+    Retrieve recurring deposit instructions for a given customer.
+    """
+    query = """
+    SELECT * FROM RecurringDeposits
+    WHERE customer_id = ?
+    """
+    return execute_sql_query(query, (customer_id,))
+
+def transfer_funds(from_account_id, to_account_id, amount):
+    """
+    Transfer funds from one account to another.
+
+    Args:
+        from_account_id (int): The ID of the account to transfer from.
+        to_account_id (int): The ID of the account to transfer to.
+        amount (float): The amount to transfer.
+
+    Returns:
+        tuple: (bool, str) A tuple containing a boolean indicating success and a status message.
+    """
+    # Check if the from_account has sufficient funds
+    check_balance_query = "SELECT balance FROM Accounts WHERE account_id = ?"
+    result = execute_sql_query(check_balance_query, (from_account_id,))
+    if not result or result[0]['balance'] < amount:
+        return False, "Insufficient funds for transfer"
+
+    # Perform the transfer
+    update_from_query = "UPDATE Accounts SET balance = balance - ? WHERE account_id = ?"
+    update_to_query = "UPDATE Accounts SET balance = balance + ? WHERE account_id = ?"
+    
+    if (execute_sql_query(update_from_query, (amount, from_account_id)) and
+        execute_sql_query(update_to_query, (amount, to_account_id))):
+        
+        # Record the transaction
+        transaction_query = """
+        INSERT INTO Transactions (account_id, transaction_type, amount, recipient_account_id, transaction_date)
+        VALUES (?, 'transfer', ?, ?, datetime('now'))
+        """
+        if execute_sql_query(transaction_query, (from_account_id, amount, to_account_id)):
+            return True, "Transfer completed successfully"
+
+    return False, "Transfer failed"
+
+

@@ -1,3 +1,4 @@
+import os, shutil
 from fastapi import FastAPI, HTTPException
 from vector_db import VectorDB
 from rag_qa import AISearch
@@ -17,6 +18,12 @@ from type_models import (
 app = FastAPI()
 vector_db = VectorDB("lancedb", "wiki")
 ai_search = AISearch(vector_db)
+
+
+def recreate_database():
+    if os.path.exists("greenbase.db"):
+        os.remove("greenbase.db")
+    shutil.copy("greenbase_template.db", "greenbase.db")
 
 
 @app.get("/health")
@@ -81,7 +88,9 @@ async def chat_single_turn(request: ChatRequest) -> MessagesResponse:
     Allows the evaluation of a single-turn chat without chat history.
     Returns the full message history including tool calls and responses.
     """
+    recreate_database()
     agent = GreenbaseAgent()
+
     response = agent.chat(request.message)
     messages = agent.get_serialized_messages()
 

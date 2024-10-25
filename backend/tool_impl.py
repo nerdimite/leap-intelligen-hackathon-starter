@@ -6,7 +6,8 @@ from jinja2 import Template
 from vector_db import VectorDB
 from dao import (
     get_customer_profile,
-    get_customer_account_details
+    get_customer_account_details,
+    # TODO: Import the remaining DAO functions here
 )
 
 vector_db = VectorDB("lancedb", "wiki")
@@ -38,9 +39,11 @@ def search_wiki(query: str, top_k: int = 5) -> list[str]:
     results = vector_db.search(query).limit(top_k).to_list()
     return search_results_template.render(query=query, results=results)
 
+# TODO Optional: Custom tool implementations here
 
 tool_call_registry = {
     "WikiSearchParams": search_wiki,
     "GetCustomerProfileParams": get_customer_profile,
     "GetCustomerAccountDetailsParams": get_customer_account_details,
+    # TODO: Map their schemas to the callable functions here
 }

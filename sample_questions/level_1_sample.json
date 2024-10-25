@@ -1,7 +1,6 @@
 [
   {
     "question": "Can I cancel a pending crypto transaction?",
-    "question_category": "FAQ",
     "eval_rubric": [
       "Should explain that transactions on the blockchain are irreversible",
       "Must mention that pending transactions cannot be canceled but additional measures can ensure future security in whatever form."
@@ -9,7 +8,6 @@
   },
   {
     "question": "What is the process for closing an account?",
-    "question_category": "How-to",
     "eval_rubric": [
       "Must mention submitting a formal closure request",
       "Should explain waiting period and any remaining balances or settlements"
@@ -20,7 +18,6 @@
   },
   {
     "question": "What steps should I take to diversify my investment portfolio?",
-    "question_category": "How-to",
     "eval_rubric": [
       "Must mention spreading investments across multiple asset classes",
       "Should refer to reducing overall risk"
@@ -39,7 +36,6 @@
   },
   {
     "question": "Can I use ETFs as part of both trading and investment strategies?",
-    "question_category": "Multi-Document",
     "eval_rubric": [
       "Trading: ETFs trade like stocks with flexibility throughout the day",
       "Investment: Long-term holding with lower expense ratios",
